@@ -1,10 +1,11 @@
 """
-usage: wttr [<location>] [-h] [-m | -u] [-TF] [-f FORMAT]
+usage: wttr [<location>] [-h] [-m | -u] [-TF] [-d DAYS] [-f FORMAT]
 
     -h , --help             help message
     -m, --metric            use metric units
     -u, --uscs              use uscs units
-    -f, --format FORMAT     use a format string, [default: 3]
+    -d, --days DAYS         days for forecast (0-3)
+    -f, --format FORMAT     use a format string
     -T, --no-terminal       remove ANSI color codes
     -F, --follow-line       add back follow line
 
@@ -14,25 +15,29 @@ from docopt import docopt, DocoptExit
 
 BASE_URL = 'https://wttr.in/'
 
-def wttr(args):
-    try:
-        a = docopt(__doc__, argv=args, help=False)
-    except DocoptExit as e:
-        return e.usage
+def wttr(args=None, defs={}):
+    a = docopt(__doc__, argv=args, help=False)
+    for k, v in defs.items():
+        if not a[k]:
+            a[k] = v
     
     if a['--help']:
-        return __doc__
+        return __doc__.strip()
 
-    location = a['<location>'] or 'New York'
+    location = a['<location>'] or 'Milano, Italy'
 
     units = 'm' if a['--metric'] else 'u' if a['--uscs'] else ''
     terminal = 'T' if a['--no-terminal'] else ''
     follow = 'F' if not a['--follow-line'] else ''
+    days = str(a['--days'])
+    days = days if days in list('0123') else ''
 
-    q = units + terminal + follow
+    q = units + terminal + follow + days
+    fmt = a['--format']
+
     p = {
             q: '',
-            'format': a['--format'],
+            **({'format': fmt} if fmt else {}),
     }
 
     url = BASE_URL + location
@@ -44,6 +49,6 @@ def wttr(args):
 
 
 if __name__ == '__main__':
-    w = wttr(args=None)
+    d = {'--days': '0'}
+    w = wttr(defs=d)
     print(w)
-
