@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """
-usage: wttr [<location>] [-h] [-m | -u] [-TF] [-d DAYS] [-f FORMAT]
+usage: wttr [<location>] [-h] [-m | -u] [-nTF] [-d DAYS] [-f FORMAT]
 
     -h , --help             help message
     -m, --metric            use metric units
     -u, --uscs              use uscs units
     -d, --days DAYS         days for forecast (0-3)
     -f, --format FORMAT     use a format string
+    -n, --narrow            narrow screen
     -T, --no-terminal       remove ANSI color codes
     -F, --follow-line       add back follow line
 
@@ -29,12 +30,13 @@ async def wttr(args=None, defs={}):
     location = a['<location>'] or 'Milano, Italy'
 
     units = 'm' if a['--metric'] else 'u' if a['--uscs'] else ''
+    narrow = 'n' if a['--narrow'] else ''
     terminal = 'T' if a['--no-terminal'] else ''
     follow = 'F' if not a['--follow-line'] else ''
     days = str(a['--days'])
     days = days if days in list('0123') else ''
 
-    q = units + terminal + follow + days
+    q = units + narrow + terminal + follow + days
     fmt = a['--format']
 
     p = {
