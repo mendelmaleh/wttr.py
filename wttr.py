@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 usage: wttr [<location>] [-h] [-m | -u] [-TF] [-d DAYS] [-f FORMAT]
 
