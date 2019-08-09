@@ -8,7 +8,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name='wttr',
-    version='0.4.1',
+    version='0.5.1',
     description='wttr.in wrapper for cli',
     long_description=readme,
     long_description_content_type='text/markdown',

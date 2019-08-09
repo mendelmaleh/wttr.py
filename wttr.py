@@ -11,12 +11,13 @@ usage: wttr [<location>] [-h] [-m | -u] [-TF] [-d DAYS] [-f FORMAT]
     -F, --follow-line       add back follow line
 
 """
+import asyncio
 import httpx
-from docopt import docopt, DocoptExit
+from docopt import docopt
 
 BASE_URL = 'https://wttr.in/'
 
-def wttr(args=None, defs={}):
+async def wttr(args=None, defs={}):
     a = docopt(__doc__, argv=args, help=False)
     for k, v in defs.items():
         if not a[k]:
@@ -44,12 +45,13 @@ def wttr(args=None, defs={}):
     url = BASE_URL + location
 
     h = {'user-agent': 'httpie'}
-    r = httpx.get(url, headers=h, params=p)
+    c = httpx.AsyncClient()
+    r = await c.get(url, headers=h, params=p)
 
     return r.text
 
 
 if __name__ == '__main__':
     d = {'--days': '0'}
-    w = wttr(defs=d)
+    w = asyncio.run(wttr(defs=d))
     print(w)
